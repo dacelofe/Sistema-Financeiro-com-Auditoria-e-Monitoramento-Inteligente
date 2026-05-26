@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fingestao-config
+  labels:
+    app: fingestao
+data:
+  db_host: "database-service"
+  db_port: "5432"
+  node_env: "production"
+  api_url: "http://backend-service:3000"

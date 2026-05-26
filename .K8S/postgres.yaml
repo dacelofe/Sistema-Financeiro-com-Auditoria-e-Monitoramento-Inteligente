@@ -1,0 +1,58 @@
+# -----------------------------------------------------------
+# 1. SOLICITAÇÃO DE ARMAZENAMENTO (PersistentVolumeClaim)
+# -----------------------------------------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi    # Tamanho do disco reservado para o banco
+---
+# -----------------------------------------------------------
+# 2. DEPLOYMENT DO BANCO DE DADOS
+# -----------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15  # Imagem oficial do PostgreSQL
+        env:
+        # Puxando o usuário do arquivo secret.yaml
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: db_user
+        # Puxando a senha do arquivo secret.yaml
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: db_password
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-storage
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc

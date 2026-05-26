@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão Financeira</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>FinGestão</h2>
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="#" class="active">📊 Dashboard</a></li>
+                    <li><a href="#">📄 Boletos de Cobrança</a></li>
+                    <li><a href="#">💸 Pagamentos a Fornecedores</a></li>
+                    <li><a href="#">🔄 Conciliação Bancária</a></li>
+                    <li><a href="#">⚙️ Configurações</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Visão Geral</h1>
+                <div class="user-info">
+                    <span>Olá, Administrador</span>
+                </div>
+            </header>
+
+            <section class="cards-grid">
+                <div class="card">
+                    <h3>Boletos Pendentes</h3>
+                    <p class="value">R$ 15.430,00</p>
+                    <span class="status warning">Atenção requerida</span>
+                </div>
+                <div class="card">
+                    <h3>Pagamentos Agendados</h3>
+                    <p class="value">R$ 8.200,00</p>
+                    <span class="status good">Para esta semana</span>
+                </div>
+                <div class="card">
+                    <h3>Conciliação Bancária</h3>
+                    <p class="value">Sincronizado</p>
+                    <span class="status good">Última sync: hoje às 08:00</span>
+                </div>
+            </section>
+
+            <section class="recent-activity">
+                <h2>Atividades Recentes</h2>
+                <div class="empty-state">
+                    <p>Selecione um menu lateral para iniciar a gestão do módulo específico.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

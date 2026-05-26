@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # BANCO DE DADOS - PostgreSQL
+  # ============================================================================
+  database-app:
+    image: marcelobarbusa/fingestao-db:latest
+    container_name: database-app
+    ports:
+      - "5432:5432"
+    healthcheck:
+      # Verifica se o banco fingestao no usuário admin está pronto para receber conexões
+      test: ["CMD-SHELL", "pg_isready -U admin -d fingestao"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fingestao-net
+
+  # ============================================================================
+  # BACKEND - Aplicação Node.js
+  # ============================================================================
+  backend-app:
+    image: marcelobarbusa/fingestao-backend:latest
+    container_name: backend-app
+    environment:
+      # Variável que ensina o backend a encontrar o banco de dados na mesma rede
+      - DATABASE_URL=postgresql://admin:senha123@database-app:5432/fingestao
+    ports:
+      - "3000:3000"
+    depends_on:
+      database-app:
+        condition: service_healthy
+    networks:
+      - fingestao-net
+    restart: unless-stopped
+
+  # ============================================================================
+  # FRONTEND - Aplicação Web
+  # ============================================================================
+  frontend-app:
+    image: marcelobarbusa/fingestao-frontend:latest
+    container_name: frontend-app
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend-app
+    networks:
+      - fingestao-net
+
+# ============================================================================
+# CONFIGURAÇÃO DE REDE
+# ============================================================================
+networks:
+  fingestao-net:
+    driver: bridge
