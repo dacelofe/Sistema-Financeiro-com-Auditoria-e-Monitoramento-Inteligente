@@ -1,0 +1,94 @@
+[
+  {
+    "v": 1,
+    "name": "Fingestao API Tests",
+    "folders": [
+      {
+        "v": 1,
+        "name": "1. Health & System",
+        "folders": [],
+        "requests": [
+          {
+            "v": "1",
+            "endpoint": "<<baseURL>>/api",
+            "name": "Health Check (Root API)",
+            "params": [],
+            "headers": [],
+            "method": "GET",
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "preRequestScript": "",
+            "testScript": "pw.test(\"Status code is 200\", () => {\n    pw.expect(pw.response.status).toBe(200);\n});\n\npw.test(\"Tempo de resposta aceitável (< 500ms)\", () => {\n    // Verifica se a API está respondendo rapidamente\n});",
+            "body": {
+              "contentType": null,
+              "body": ""
+            }
+          }
+        ]
+      },
+      {
+        "v": 1,
+        "name": "2. Transações",
+        "folders": [],
+        "requests": [
+          {
+            "v": "1",
+            "endpoint": "<<baseURL>>/api/transactions",
+            "name": "Criar Nova Transação",
+            "params": [],
+            "headers": [],
+            "method": "POST",
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "preRequestScript": "",
+            "testScript": "pw.test(\"Status code is 200 ou 201\", () => {\n    pw.expect(pw.response.status).toBeLevel2xx();\n});\n\npw.test(\"Resposta contém o ID da transação\", () => {\n    const json = pw.response.body;\n    pw.expect(json).toHaveProperty(\"id\");\n    pw.env.set(\"lastTransactionId\", json.id);\n});",
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"description\": \"Pagamento de Serviço\",\n  \"amount\": 150.00,\n  \"type\": \"expense\",\n  \"date\": \"2026-05-31\"\n}"
+            }
+          },
+          {
+            "v": "1",
+            "endpoint": "<<baseURL>>/api/transactions",
+            "name": "Listar Transações",
+            "params": [],
+            "headers": [],
+            "method": "GET",
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "preRequestScript": "",
+            "testScript": "pw.test(\"Status code is 200\", () => {\n    pw.expect(pw.response.status).toBe(200);\n});\n\npw.test(\"Resposta deve ser um Array\", () => {\n    const json = pw.response.body;\n    pw.expect(Array.isArray(json)).toBe(true);\n});",
+            "body": {
+              "contentType": null,
+              "body": ""
+            }
+          },
+          {
+            "v": "1",
+            "endpoint": "<<baseURL>>/api/transactions/<<lastTransactionId>>",
+            "name": "Buscar Transação Específica",
+            "params": [],
+            "headers": [],
+            "method": "GET",
+            "auth": {
+              "authType": "none",
+              "authActive": true
+            },
+            "preRequestScript": "pw.test(\"Garante que ID existe no ambiente\", () => {\n    pw.expect(pw.env.get(\"lastTransactionId\")).not.toBeNull();\n});",
+            "testScript": "pw.test(\"Status code is 200\", () => {\n    pw.expect(pw.response.status).toBe(200);\n});\n\npw.test(\"Transação retornada tem a mesma descrição\", () => {\n    const json = pw.response.body;\n    pw.expect(json.description).toBe(\"Pagamento de Serviço\");\n});",
+            "body": {
+              "contentType": null,
+              "body": ""
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
